@@ -11,8 +11,7 @@ class Settings:
         self.AUTH_URI = os.getenv("AUTH_URI")
         self.TOKEN_URI = os.getenv("TOKEN_URI")
         self.CERT_URL = os.getenv("AUTH_PROVIDER_X509_CERT_URL")
-        self.REDIRECT_URI = os.getenv("REDIRECT_URI", "http://localhost:8000/auth/callback")
-
+        self.REDIRECT_URI = os.getenv("REDIRECT_URI")
     def get_client_config(self):
         return {
             "web": {
