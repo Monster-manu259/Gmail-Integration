@@ -44,6 +44,6 @@ async def callback(request: Request):
         flow.fetch_token(authorization_response=str(request.url))
         creds = flow.credentials
         Path("token.json").write_text(creds.to_json())
-        return {"message": "Authentication successful Now you can send emails."}
+        return {"message": "Authentication successful! Now you can send emails."}
     except Exception as e:
         return {"error": str(e)}
