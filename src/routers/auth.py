@@ -4,6 +4,9 @@ from pathlib import Path
 import google_auth_oauthlib.flow
 from src.utils.processor import SCOPES
 from src.config.settings import settings
+import os
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
 
 router = APIRouter()
 
@@ -30,18 +33,17 @@ async def login():
 
 @router.get("/callback")
 async def callback(request: Request):
-    state = Path("state.txt").read_text()
-
-    flow = google_auth_oauthlib.flow.Flow.from_client_config(
-        settings.get_client_config(),
-        scopes=SCOPES,
-        state=state
-    )
-    flow.redirect_uri = REDIRECT_URI
-
-    flow.fetch_token(authorization_response=str(request.url))
-    creds = flow.credentials
-
-    Path("token.json").write_text(creds.to_json())
-
-    return {"message": "Authentication successful! Now you can send emails."}
+    try:
+        state = Path("state.txt").read_text()
+        flow = google_auth_oauthlib.flow.Flow.from_client_config(
+            settings.get_client_config(),
+            scopes=SCOPES,
+            state=state
+        )
+        flow.redirect_uri = REDIRECT_URI
+        flow.fetch_token(authorization_response=str(request.url))
+        creds = flow.credentials
+        Path("token.json").write_text(creds.to_json())
+        return {"message": "Authentication successful! Now you can send emails."}
+    except Exception as e:
+        return {"error": str(e)}
